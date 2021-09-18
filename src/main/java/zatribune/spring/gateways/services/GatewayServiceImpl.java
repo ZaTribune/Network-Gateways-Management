@@ -1,5 +1,6 @@
 package zatribune.spring.gateways.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Slf4j
 @Service
 public class GatewayServiceImpl implements GatewayService {
 
@@ -23,6 +25,7 @@ public class GatewayServiceImpl implements GatewayService {
         this.repository=repository;
 
     }
+
 
     @Override
     public Gateway getById(UUID uuid) {
