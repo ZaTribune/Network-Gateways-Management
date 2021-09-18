@@ -1,0 +1,190 @@
+<head xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <link rel="shortcut icon" href="/images/favicon.ico" th:href="@{/images/favicon.ico}">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/5.0.1/css/bootstrap.min.css}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+            crossorigin="anonymous"
+            th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"
+            th:src="@{/webjars/bootstrap/5.0.1/js/bootstrap.bundle.min.js}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+          rel="stylesheet"
+          crossorigin="anonymous"
+          th:href="@{/webjars/font-awesome/5.15.2/css/all.min.css}">
+    <style>
+        i {
+            font-style: inherit;
+        }
+        .invalid-tooltip {
+            display: flex;
+            top: auto;
+        }
+        .btn-primary {
+            color: wheat;
+            background-color: #2d3b4b;
+            border-color: #0a53be;
+        }
+        .btn-outline-light {
+            color: wheat;
+            border-color: wheat;
+        }
+        .bg-dark{
+            background-color: #2d3b4b!important
+        }
+        .bg-light{
+            background-color: #e3e3e3 !important;
+        }
+        .centered {
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .list-group-item{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+    <script>
+        function getContent(id, url) {
+            $("#mainContainer").load("page.html");
+            $(id).load(url);
+            let navbar = $("#navbarResponsive");
+            if (navbar.hasClass('show')) {
+                $('#btnNavbar').click();
+                navbar.area_expanded = false;
+                navbar.addClass('collapsing');
+                navbar.removeClass('show');
+            }
+        }
+
+        function confirmDialog(modalType, okActionURL, laterFunction) {
+            $('#modalOverlay').load('/modal/' + modalType, function () {
+                let myModel = $('#myModal');
+                myModel.on('hidden.bs.modal', function () {
+                    this.remove();
+                    // to remove the modal
+                })
+                myModel.modal('show');
+                $('#btnOkDialog').click(function () {
+                    $.ajax(
+                        {
+                            type: "GET",
+                            data: null,//data to be sent
+                            cache: false,
+                            url: okActionURL,
+                            success: function (data) {
+                                //after
+                                myModel.modal('hide');
+                                laterFunction();
+                            },
+                            error: function () {
+                                //error
+                            }
+                        });
+                })
+            });
+
+        }
+        function selectUnitMeasure(select, unitMeasureDescriptionField) {
+            unitMeasureDescriptionField.setAttribute('value', select.options[select.selectedIndex].text)
+        }
+
+        function insertRow() {
+            let select = document.createElement("select");// Create with DOM
+            let statuses=["ONLINE","OFFLINE"];
+            for (let i = 0; i < statuses.length; i++) {
+                select.innerHTML += '<option value=' + statuses[i] + '>' + statuses[i] + '</option>';
+            }
+
+            let table = $('#devicesTable tbody');
+            //the array counts from 0 But!!! there's a header
+            //we need it to insert on the end
+            let rowCount = $('#devicesTable tr').length - 1;
+            select.setAttribute('class', "custom-select mr-sm-2");
+            select.setAttribute('name', "devices[" + rowCount + "].status");
+            select.setAttribute('value', "devices[" + rowCount + "].status");
+            select.setAttribute('onchange', "selectUnitMeasure(this,this.parentElement.lastElementChild)");
+            table.append('<tr>' +
+                '<td class="p-0" style="vertical-align: middle"><input class="form-check-input me-1" type="checkbox">' +
+                '<input type="hidden" name="devices[' + rowCount + '].id">' +
+                '</td>' +
+                '<td class="p-0"><input name="devices[' + rowCount + '].vendor"></td>' +
+                '<td class="p-0" style="vertical-align: middle">' +
+                select.outerHTML +
+                '</td></tr>')
+        }
+
+        function deleteTableRow(table) {
+            $('#' + table[0].id + ' tbody tr td input:checkbox:checked').each(function (index, element) {
+                this.closest("tr").remove();
+            });
+
+            $('.' + 'device-id').each(function (index, element) {
+                element.setAttribute("id", 'devices' + index + '.id');
+                element.setAttribute("name", 'devices[' + index + '].id');
+            })
+            $('.' + 'device-vendor').each(function (index, element) {
+                element.setAttribute("name", 'devices[' + index + '].vendor');
+                element.setAttribute("id", 'devices' + index + '.vendor');
+            })
+            $('.' + 'device-status').each(function (index, element) {
+                element.setAttribute("name", 'devices[' + index + '].status');
+                element.setAttribute("id", 'devices' + index + '.status');
+            })
+        }
+
+        function sendData(form,resultLoader,errorLoader,url) {
+            //let myFile = $('#image').prop('files');
+            //console.log(typeof myFile);
+            let myModal;
+            $.ajax(
+                {
+                    //don't add contentType: false,processData: false,
+                    type: "POST",
+                    data: form.serialize(),
+                    cache: false,
+                    url: url,
+                    success: function (data) {
+                        resultLoader.html(data);
+                        myModal=$('#myModal');
+                        if (myModal!=null){
+                            myModal.modal('hide');
+                            myModal.on("hidden.bs.modal", function () {
+                                let elements=document.getElementsByClassName("modal-backdrop");
+                                while(elements.length > 0){
+                                    elements[0].parentNode.removeChild(elements[0]);
+                                }
+                            });
+
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        errorLoader.html(xhr.responseText);
+                        myModal=$('#myModal');
+                        if (myModal!=null) {
+                            myModal.modal('show');
+                            // a hack to remove the modal effect
+                            myModal.on("hidden.bs.modal", function () {
+                             resultLoader.html('');
+                             let elements=document.getElementsByClassName("modal-backdrop");
+                                while(elements.length > 0){
+                                    elements[0].parentNode.removeChild(elements[0]);
+                                }
+                            });
+                        }
+                    }
+                });
+        }
+
+    </script>
+</head>

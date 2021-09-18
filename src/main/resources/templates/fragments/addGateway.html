@@ -1,0 +1,56 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="AddGatewayFragment"
+            class="modal fade" id="myModal" tabindex="-1" aria-labelledby="add-gateway-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <form id="new-gateway-form"
+                  th:action="@{/add}"
+                  th:object="${newGateway}"
+                  method="post"
+                  enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="add-gateway-modal-label">Add New Gateway</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3 col-sm-10 col-md-4 col-lg-8 m-auto">
+                        <label for="inputName" class="form-label d-flex">Name</label>
+                        <input type="text" id="inputName" class="form-control" th:field="*{name}"/>
+                        <div class="invalid-feedback d-inline-block" th:if="${#fields.hasErrors('name')}">
+                            <ul class="m-0">
+                                <li th:each="err:${#fields.errors('name')}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-sm-10 col-md-4 col-lg-8 m-auto">
+                        <label for="inputIPV4" class="form-label d-flex">IPV4</label>
+                        <input type="text" id="inputIPV4" class="form-control" th:field="*{IPV4}"/>
+                        <div class="invalid-feedback d-inline-block" th:if="${#fields.hasErrors('IPV4')}">
+                            <ul class="m-0">
+                                <li th:each="err:${#fields.errors('IPV4')}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-sm-10 col-md-4 col-lg-8 m-auto">
+                        <label for="inputSerial" class="form-label d-flex">Serial N.</label>
+                        <input type="text" id="inputSerial" class="form-control" th:field="*{serial}"/>
+                        <div class="invalid-feedback d-inline-block" th:if="${#fields.hasErrors('serial')}">
+                            <ul class="m-0">
+                                <li th:each="err:${#fields.errors('serial')}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+                <div class="modal-footer align-items-center">
+                    <button id="btnSubmitNewGateway"
+                            class="btn btn-primary w-25 m-2" th:height="50" type="submit"
+                            onclick="sendData($('#new-gateway-form'),$('#mainContainer'),$('#modalOverlay')
+                            ,'/gateways/add')">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>

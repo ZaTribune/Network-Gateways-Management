@@ -1,0 +1,44 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <div class="card">
+        <div class="card-header" style="text-align-last: justify">
+            <h1 class="d-inline-block" th:text="${gateway.name}"></h1>
+            <section class="d-inline-block">
+                <button class="btn btn-secondary" id="btnEdit"
+                        th:attr="data-gateway=${gateway.id}"
+                        onclick="$('#nav-tabContent').load('/gateways/updateGateway/'+this.getAttribute('data-gateway'))">
+
+                    <i class="fa fa-edit d-table-cell"></i>
+                    <i class="d-table-cell">Edit</i>
+                </button>
+
+                <button class="btn btn-danger"
+                        th:id="${gateway.id}"
+                        onclick="confirmDialog(
+                                 'DELETE',
+                                 '/deleteGateway/'+this.id,
+                                 function() {getContent($('#container'),'/gateways')})"
+                        data-bs-toggle="modal" data-bs-target="#myModal">
+                    <i class="fa fa-trash d-table-cell"></i>
+                    <i class="d-table-cell">Delete</i>
+                </button>
+            </section>
+
+        </div>
+        <div class="card-body container-fluid row">
+            <label class="d-block mb-1"><b>Serial:</b><span
+                    th:text="' '+${gateway.serial}"></span></label>
+            <label class="d-block mb-1"><b>IPV4:</b><span
+                    th:text="' '+${gateway.IPV4}"></span></label>
+            <ul class="list-group">
+
+                <li class="list-group-item"
+                    th:if="*{not#lists.isEmpty(gateway.devices)}"
+                    th:each="device:${gateway.devices}"
+                    th:text="${device.id}+' '+${device.vendor}">
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+</div>

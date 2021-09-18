@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+
+<head th:replace="fragments/head"></head>
+
+<body class="bg-body">
+<header th:replace="fragments/header"></header>
+<div id="iframeloading" class="spinner-border text-success centered" role="status">
+    <span class="sr-only">Loading...</span>
+</div>
+
+<div id="modalOverlay"></div>
+<!-- Here, we'll play with the content-->
+<main class="container container-fluid justify-content-center" id="mainContainer"
+      th:insert="home/gateways::GatewaysFragment"
+      style="min-height:100vh;margin-top: 12vh;">
+<!--    <div class="tab-pane fade" th:each="gateway, stat : ${gateways}"-->
+<!--         th:id="'gateway-content-'+${gateway.id}" role="tabpanel">-->
+<!--        <form th:object="${gateways.get(stat)}">-->
+<!--            -->
+<!--        </form>-->
+<!--    </div>-->
+</main>
+
+<footer th:replace="fragments/footer"></footer>
+
+</body>
+</html>

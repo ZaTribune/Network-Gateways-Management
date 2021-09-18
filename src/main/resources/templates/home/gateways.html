@@ -1,0 +1,49 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="GatewaysFragment">
+
+    <div class="row mb-3" th:if="${gateways!=null}" style="min-height:100vh">
+        <div class="col-4 col-4 bg-light p-0">
+            <div class="row-cols-1 p-0 pb-1" style="text-align: center;background-color: white;">
+                <button onclick="confirmDialog(
+                                 'CREATE',
+                                 '/gateways/add')"
+                        class="btn btn-primary" style="height: 15vh;width: 12vw;">
+                    <i class="fa fa-plus"></i>Add Gateway
+                </button>
+            </div>
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action" th:id="'gateway-item-'+${gateway.id}"
+                   data-bs-toggle="list"
+                   th:attr="data-gateway=${gateway.id}"
+                   onclick="$('#nav-tabContent').load('/gateways/showGateway/'+this.getAttribute('data-gateway'));"
+                   th:each="gateway, stat : ${gateways}"
+                   th:href="'#gateway-content-'+${gateway.id}"
+                   role="tab"
+                   th:text="${gateway.name}"></a>
+            </div>
+        </div>
+
+        <div class="col-8 ">
+                <div class="tab-content"
+                     id="nav-tabContent"
+                     role="tabpanel">
+
+              </div>
+        </div>
+
+        <script th:inline="javascript">
+            $(function () {
+
+                let list=document.getElementById("list-tab");
+                if (list.children.length>0){
+                    let clicker=list.children[0];
+                    $('#nav-tabContent').load('/gateways/showGateway/'+clicker.getAttribute("data-gateway"));
+                    let triggerEl = document.querySelector('#list-tab a:first-child');
+                    triggerEl.classList.add("active");
+                    let firstContent = document.querySelector('#nav-tabContent div:first-child');
+                    firstContent.classList.add("show", "active");
+                }
+            });
+        </script>
+
+    </div>
+</div>

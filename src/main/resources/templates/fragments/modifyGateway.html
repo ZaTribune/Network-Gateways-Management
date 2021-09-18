@@ -1,0 +1,116 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <!--specify the encoding type to allow uploading images via html -->
+    <form th:fragment="GatewayFragment"
+          th:object="${gateway}"
+          th:action="@{/updateOrSaveGateway}"
+          method="POST"
+          class="justify-content-center"
+          id="update-gateway-form">
+        <div class="card">
+            <div class="card-header">
+                <h5 th:text="${gateway.name}"></h5>
+                <input type="hidden"
+                       th:field="*{name}"
+                       th:value="${gateway.name}">
+            </div>
+
+            <div class="card-body">
+
+                <input type="hidden" class="form-control" th:field="*{id}" th:value="${gateway.id}"/>
+
+                <label class="d-block mb-1"><b>Serial:</b>
+                    <span th:text="' '+${gateway.serial}"></span>
+                </label>
+                <input type="hidden"
+                       th:field="*{serial}"
+                       th:value="${gateway.serial}">
+                <label class="d-block mb-1"><b>IPV4:</b>
+                    <span th:text="' '+${gateway.IPV4}"></span>
+                </label>
+                <input type="hidden"
+                       th:field="*{IPV4}"
+                       th:value="${gateway.IPV4}">
+                <div class="card">
+                    <div class="card-header"><h1>Devices</h1></div>
+                    <div class="card-body table-responsive">
+                        <table id="devicesTable" class="table table-sm">
+                            <tr>
+                                <th>*</th>
+                                <th>Vendor</th>
+                                <th>Status</th>
+                            </tr>
+                            <tr th:if="${#fields.hasErrors('devices')}">
+                                <td>
+                                <div class="invalid-tooltip" onclick="this.style.display='none'">
+                                    <ul class="m-0">
+                                        <li th:each="err:${#fields.errors('devices')}"
+                                            th:text="${err}"></li>
+                                    </ul>
+                                </div>
+                                </td>
+                            </tr>
+
+                            <tr th:each="device,ingStat :${gateway.devices}" class="device-row">
+                                <td class="p-0" style="vertical-align: middle">
+
+                                    <input class="form-check-input me-1" type="checkbox"
+                                           th:value="*{devices[__${ingStat.index}__].id}" aria-label="">
+                                    <input type="hidden" class="device-id"
+                                           th:field="*{devices[__${ingStat.index}__].id}"
+                                           th:value="${device.id}">
+
+                                </td>
+                                <td class="p-0">
+                                    <input class="device-vendor"
+                                           th:field="*{devices[__${ingStat.index}__].vendor}"
+                                           th:value="${device.vendor}" aria-label="">
+                                    <div class="invalid-tooltip" onclick="this.style.display='none'"
+                                         th:if="${#fields.hasErrors('devices['+__${ingStat.index}__+'].vendor')}">
+                                        <ul class="m-0">
+                                            <li th:each="err:${#fields.errors('devices['+__${ingStat.index}__+'].vendor')}"
+                                                th:text="${err}"></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td class="p-0" style="vertical-align: middle">
+                                    <select class="device-status custom-select mr-sm-2" aria-label=""
+                                            th:field="*{devices[__${ingStat.index}__].status}"
+                                            onchange="selectUnitMeasure(this,this.parentElement.lastElementChild)"
+                                            required>
+
+                                        <option th:each="status,unitStat:${statuses}"
+                                                th:value="${status}" th:text="${status.name}"
+                                                th:selected="(${device.status.name} == ${status.name})">
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        <div>
+                            <button class="btn btn-success"
+                                    type="button"
+                                    onclick="insertRow()">
+                                <i class="fa fa-plus d-table-cell"></i>
+                            </button>
+                            <button class="btn btn-warning"
+                                    type="button"
+                                    onclick='deleteTableRow($("#devicesTable"))'>
+                                <i class="fa fa-minus d-table-cell"></i>
+                            </button>
+                        </div>
+                    </div><!--END of devices edit ares-->
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="card align-items-center">
+        <button th:attr="data-gateway=${gateway.id}" id="btnSubmitRecipe"
+                class="btn btn-primary w-25 m-2" th:height="50" type="submit"
+                onclick="sendData($('#update-gateway-form'),$('#nav-tabContent'),$('#nav-tabContent'),'/gateways/updateOrSaveGateway')">
+            Save
+        </button>
+    </div>
+</div>
+
+
+
