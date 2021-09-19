@@ -2,7 +2,6 @@ package zatribune.spring.gateways.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zatribune.spring.gateways.data.models.Gateway;
@@ -53,7 +52,8 @@ public class GatewayServiceImpl implements GatewayService {
     }
 
     @Override
-    public Gateway update(Gateway input) {
+    public Gateway update(UUID id,Gateway input) {
+        repository.findById(id).orElseThrow(()->new EntityNotFoundException("Device not found by id "+id));
         return repository.save(input);
     }
 
@@ -61,6 +61,12 @@ public class GatewayServiceImpl implements GatewayService {
     public void delete(Gateway input) {
         //todo:check for successful deletion using a custom query
         repository.delete(input);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        Gateway gateway=repository.findById(id).orElseThrow(()->new EntityNotFoundException("Gateway not found by id "+id));
+        repository.delete(gateway);
     }
 
     @Override

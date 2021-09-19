@@ -8,7 +8,8 @@ import java.util.UUID;
 public interface CrudService <T>{
     T getById(UUID uuid);
     T save(T input);
-    T update(T input);
+    T update(UUID id,T input);
     void delete(T input);
+    void deleteById(UUID id);
     List<T>getAll();
 }

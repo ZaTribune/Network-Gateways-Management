@@ -1,20 +1,18 @@
-package zatribune.spring.gateways.controllers;
+package zatribune.spring.gateways.controllers.html;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import zatribune.spring.gateways.controllers.html.GatewaysController;
 import zatribune.spring.gateways.data.models.Gateway;
-import zatribune.spring.gateways.services.GatewayService;
 import zatribune.spring.gateways.services.GatewayServiceImpl;
 
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

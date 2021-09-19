@@ -1,9 +1,8 @@
-package zatribune.spring.gateways.controllers;
+package zatribune.spring.gateways.controllers.html;
 
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;

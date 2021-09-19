@@ -32,7 +32,8 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public Device update(Device input) {
+    public Device update(UUID id,Device input) {
+        repository.findById(id).orElseThrow(()->new EntityNotFoundException("Device not found by id "+id));
         return repository.save(input);
     }
 
@@ -40,6 +41,12 @@ public class DeviceServiceImpl implements DeviceService{
     public void delete(Device input) {
         //todo:check for successful deletion using a custom query
         repository.delete(input);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        Device device=repository.findById(id).orElseThrow(()->new EntityNotFoundException("Device not found by id "+id));
+        repository.delete(device);
     }
 
     @Override

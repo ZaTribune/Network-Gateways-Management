@@ -1,4 +1,4 @@
-package zatribune.spring.gateways.controllers;
+package zatribune.spring.gateways.controllers.html;
 
 
 import lombok.extern.slf4j.Slf4j;
