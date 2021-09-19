@@ -7,10 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import zatribune.spring.gateways.data.models.Device;
 import zatribune.spring.gateways.data.models.DeviceStatus;
 import zatribune.spring.gateways.data.models.Gateway;
 import zatribune.spring.gateways.services.GatewayService;
@@ -31,50 +29,44 @@ public class GatewaysRestController {
         this.gatewayService=gatewayService;
     }
 
+    @GetMapping("/get/{id}")
+    public Gateway getGateway(@PathVariable UUID id){
+        return gatewayService.getById(id);
+    }
 
     @PostMapping("/add")
-    public String addNewGateway(@Valid @ModelAttribute(name = "newGateway") Gateway gateway, BindingResult bindingResult
-            ,HttpServletResponse response, Model model) throws IOException {
-        log.info("adding a new gateway");
-        if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(objectError -> log.error(objectError.toString()));
-            model.addAttribute("statuses",DeviceStatus.values());
-            //to force being recognized as error on ajax
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "fragments/addGateway";
+    public Gateway addGateway(@ModelAttribute Gateway newGateway){
+        return gatewayService.save(newGateway);
+    }
+
+    @PutMapping("/update/{id}")
+    public Gateway updateGateway(@PathVariable UUID id,@ModelAttribute Gateway newGateway){
+        return gatewayService.update(id,newGateway);
+    }
+
+    @PatchMapping("/patch/{id}")
+    public Gateway patchDevice(@PathVariable UUID id,@ModelAttribute Gateway newGateway){
+
+        Gateway oldGateway=gatewayService.getById(id);
+
+        if (!oldGateway.getIPV4().equals(newGateway.getIPV4())){
+            oldGateway.setIPV4((newGateway.getIPV4()));
         }
-        gatewayService.save(gateway);
-        model.addAttribute("gateways",gatewayService.getAllWithDevices());
-        return "home/gateways";
-    }
 
-    @Transactional
-    @RequestMapping("/showGateway/{id}")
-    public String showGateway(@PathVariable UUID id, Model model){
-        Gateway gateway = gatewayService.getByIdWithDevices(id);
-        model.addAttribute("gateway", gateway);
-        return "/fragments/showGateway";
-    }
-
-    @Transactional
-    @RequestMapping("/updateGateway/{id}")
-    public String updateGateway(@PathVariable UUID id, Model model) {
-        model.addAttribute("gateway", gatewayService.getByIdWithDevices(id));
-        model.addAttribute("statuses", DeviceStatus.values());
-        return "fragments/modifyGateway";
-    }
-
-    @PostMapping("/updateOrSaveGateway")
-    public String updateOrSaveGateway(@Valid @ModelAttribute Gateway gateway,BindingResult bindingResult,Model model){
-        log.info(" for gateway {}", gateway.getId());
-        if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(objectError -> log.error(objectError.toString()));
-            model.addAttribute("statuses",DeviceStatus.values());
-            return "fragments/modifyGateway";
+        if (!oldGateway.getName().equals(newGateway.getName())){
+            oldGateway.setName(newGateway.getName());
         }
-        Gateway updated=gatewayService.save(gateway);
-        model.addAttribute("gateway",updated);//return updated info
-        return "fragments/showGateway";
+
+        if (!oldGateway.getSerial().equals(newGateway.getSerial())){
+            oldGateway.setSerial(newGateway.getSerial());
+        }
+        return gatewayService.save(oldGateway);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @DeleteMapping("/delete/{id}")
+    public void deleteDevice(@PathVariable UUID id){
+        gatewayService.deleteById(id);
     }
 
 }

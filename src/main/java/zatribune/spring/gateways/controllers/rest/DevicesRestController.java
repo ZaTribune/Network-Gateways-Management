@@ -18,8 +18,6 @@ public class DevicesRestController {
 
     private final DeviceService deviceService;
 
-
-
     @Autowired
     public DevicesRestController(DeviceService deviceService) {
         this.deviceService = deviceService;
