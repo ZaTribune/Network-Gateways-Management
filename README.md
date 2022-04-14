@@ -20,4 +20,4 @@ Finally, it must be possible to add and remove a device from a gateway.
 - This project uses an embedded "h2 database" so there's no need for a dbms e.g. MySQL or Postgres ...etc  
 
 ## Authors  
-   **Muhammad Ali** - find me on : [LinkedIn](https://www.linkedin.com/in/zatribune).    
+[![Linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white&label=Muhammad%20Ali)](https://linkedin.com/in/zatribune) 
